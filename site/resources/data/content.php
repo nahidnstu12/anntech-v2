@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Phase 1 static content. Ported from prototype/data.js.
- * Edit here; Blade reads this file. Image paths are public URLs.
+ * Phase 1 static content. Blade reads this file.
+ * Client-facing copy for review: content-for-client.txt (nav/seo stay here only).
  */
 
 return array (

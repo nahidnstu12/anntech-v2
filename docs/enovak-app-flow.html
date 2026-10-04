@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Enovak — Full app flow (review)</title>
+  <style>
+    :root {
+      --bg: #fbf8f1;
+      --card: #fff;
+      --text: #2e1c12;
+      --muted: #5c4a3a;
+      --accent: #2f5a21;
+      --accent-light: #e8f0e4;
+      --border: #ddd5c8;
+      --phase-done: #2f5a21;
+      --phase-next: #b45309;
+      --phase-later: #6b7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    h1 { font-size: 1.65rem; margin: 0 0 0.25rem; color: var(--accent); }
+    .subtitle { color: var(--muted); margin: 0 0 1.5rem; font-size: 0.95rem; }
+    h2 {
+      font-size: 1.1rem;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    h3 { font-size: 0.95rem; margin: 1rem 0 0.5rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 0.75rem;
+    }
+    .timeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .phase {
+      flex: 1 1 140px;
+      min-width: 120px;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: var(--card);
+      position: relative;
+    }
+    .phase strong { display: block; font-size: 1.1rem; }
+    .phase .label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .phase.done { border-color: var(--phase-done); background: var(--accent-light); }
+    .phase.done .label { color: var(--phase-done); }
+    .phase.next { border-color: var(--phase-next); box-shadow: 0 0 0 1px var(--phase-next); }
+    .phase.next .label { color: var(--phase-next); }
+    .phase.later .label { color: var(--phase-later); }
+    .phase ul { margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: 0.85rem; }
+    .phase li { margin: 0.2rem 0; }
+    .arrow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin: -0.25rem 0 0.5rem;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    @media (min-width: 640px) {
+      .flow.two { grid-template-columns: 1fr 1fr; }
+    }
+    .flow-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .flow-box.public { border-left: 4px solid var(--accent); }
+    .flow-box.admin { border-left: 4px solid #1e40af; }
+    .steps { counter-reset: step; list-style: none; padding: 0; margin: 0.5rem 0 0; }
+    .steps li {
+      counter-increment: step;
+      padding: 0.35rem 0 0.35rem 2rem;
+      position: relative;
+      font-size: 0.9rem;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      width: 1.35rem;
+      height: 1.35rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .admin .steps li::before { background: #dbeafe; color: #1e40af; }
+    code, .route { font-family ui-monospace, monospace; font-size: 0.85em; background: #f3ede4; padding: 0.1em 0.35em; border-radius: 3px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+    th { background: var(--accent-light); font-weight: 600; }
+    .warn {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    .warn strong { color: #92400e; }
+    .ok {
+      background: var(--accent-light);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
+    .tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: #eee;
+      color: var(--muted);
+    }
+    .tag.p1 { background: var(--accent-light); color: var(--accent); }
+    .tag.p2 { background: #dbeafe; color: #1e40af; }
+    .tag.p3 { background: #fce7f3; color: #9d174d; }
+    .tag.p4 { background: #ede9fe; color: #5b21b6; }
+    .tag.p5 { background: #ffedd5; color: #c2410c; }
+    .stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .stack span {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.55rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .landing-map {
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .landing-map a { color: var(--accent); }
+    footer { margin-top: 2rem; font-size: 0.8rem; color: var(--muted); }
+    @media print {
+      body { background: #fff; }
+      .phase { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Enovak — full app flow</h1>
+    <p class="subtitle">One-page review: public site + admin phases. Open in browser · detail in <code>docs/requirements.md</code> + <code>phases/*.md</code></p>
+
+    <div class="ok">
+      <strong>Build order:</strong> Phase 1 (public, mostly done) → 2 login & roles → 3 save inquiries → 4 invoices → 5 CMS last.
+      Until Phase 5, website copy lives in <code>site/resources/data/content.php</code> (not the admin panel).
+    </div>
+
+    <h2>Phase roadmap</h2>
+    <div class="timeline">
+      <div class="phase done">
+        <span class="label">Phase 1 · largely built</span>
+        <strong>Public website</strong>
+        <ul>
+          <li>Landing + products</li>
+          <li>Contact → email only</li>
+          <li>No CMS, no inquiry DB</li>
+        </ul>
+      </div>
+      <div class="phase next">
+        <span class="label">Phase 2 · next</span>
+        <strong>Admin + access</strong>
+        <ul>
+          <li><code>/admin</code> React login</li>
+          <li>Users, roles, permissions</li>
+          <li>Activity log feed</li>
+        </ul>
+      </div>
+      <div class="phase later">
+        <span class="label">Phase 3</span>
+        <strong>Inquiries</strong>
+        <ul>
+          <li>Form saves to DB</li>
+          <li>Still emails Enovak</li>
+          <li>Inbox in admin</li>
+        </ul>
+      </div>
+      <div class="phase later">
+        <span class="label">Phase 4</span>
+        <strong>Invoices</strong>
+        <ul>
+          <li>Quotes / invoices</li>
+          <li>PDF + email</li>
+          <li>Draft → Sent → Paid</li>
+        </ul>
+      </div>
+      <div class="phase later">
+        <span class="label">Phase 5 · later</span>
+        <strong>CMS</strong>
+        <ul>
+          <li>Edit products, copy, logos</li>
+          <li>No deploy for text changes</li>
+        </ul>
+      </div>
+    </div>
+    <p class="arrow-row">1 → 2 → 3 → 4 → 5 (don’t skip 2 before 3–5)</p>
+
+    <h2>Two apps, one Laravel project</h2>
+    <div class="flow two">
+      <div class="flow-box public">
+        <strong>Public (everyone)</strong> — Blade + Tailwind, no login
+        <ol class="steps">
+          <li>Visitor opens <span class="route">/</span> — hero, about, services, showcase, contact on one page</li>
+          <li>Clicks <strong>Products</strong> → <span class="route">/products</span> (filter by category)</li>
+          <li>Opens a product → <span class="route">/products/{slug}</span> (specs, images, brochure link)</li>
+          <li>Fills contact form → POST <span class="route">/contact</span> → queued email to Enovak<br>
+            <em>Phase 3+:</em> same form also saves inquiry in database</li>
+        </ol>
+      </div>
+      <div class="flow-box admin">
+        <strong>Admin (staff only)</strong> — React SPA at <span class="route">/admin</span>
+        <ol class="steps">
+          <li>Login (Sanctum session, CSRF cookie)</li>
+          <li>Dashboard — counts (new inquiries, etc.) + activity feed for super admin</li>
+          <li><strong>Phase 2:</strong> Users & roles (super admin creates custom roles + permissions)</li>
+          <li><strong>Phase 3:</strong> Contact inquiries — list, read, status, internal notes</li>
+          <li><strong>Phase 4:</strong> Invoice clients → build invoice → PDF → send email → mark paid</li>
+          <li><strong>Phase 5:</strong> Edit website content (products, services, showcase, logos)</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2>Public site map (locked — don’t add extra pages without sign-off)</h2>
+    <div class="card landing-map">
+      <strong>Only 3 URLs:</strong>
+      <span class="route">/</span> ·
+      <span class="route">/products</span> ·
+      <span class="route">/products/{slug}</span>
+      <br /><br />
+      <strong>Nav everywhere:</strong> Home · About · Services · Products · Showcase · Contact
+      <br />
+      On home, About/Services/Showcase/Contact = scroll anchors (<span class="route">#about</span>, etc.). Products leaves the page.
+      <br /><br />
+      <strong>Landing page order:</strong> Hero → About (story, MD, values) → Services (cards, <em>no</em> separate service pages) → Featured products teaser → Showcase (project types / achievements, <em>not</em> client logo wall yet) → Contact (form + address + map)
+    </div>
+
+    <div class="warn">
+      <strong>Easy to miss — intentional choices</strong>
+      <ul style="margin: 0.5rem 0 0; padding-left: 1.2rem;">
+        <li><strong>No</strong> <span class="route">/about</span>, <span class="route">/services/…</span>, <span class="route">/portfolio</span> — keeps IA simple</li>
+        <li><strong>Showcase</strong> on site = capability/project history — different from <strong>invoice customers</strong> in admin (Phase 4)</li>
+        <li><strong>Client logo wall</strong> = Phase 5 CMS, not Phase 1</li>
+        <li><strong>CMS</strong> (client contract “easy updates”) comes <em>after</em> inquiries + invoices + staff access</li>
+        <li>Mail always <strong>queued</strong> — not synchronous send</li>
+        <li><strong>No</strong> payment gateway, <strong>no</strong> customer login portal</li>
+      </ul>
+    </div>
+
+    <h2>Client contract → where it lands</h2>
+    <table>
+      <thead>
+        <tr><th>Client asked for</th><th>What we ship</th><th>When</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Company site, about, services, products, portfolio feel, contact, responsive</td><td>Blade marketing site + <code>content.php</code></td><td><span class="tag p1">P1</span> (+ copy tweaks)</td></tr>
+        <tr><td>Contact form + email notification</td><td>POST + queued mail</td><td><span class="tag p1">P1</span></td></tr>
+        <tr><td>Inquiries saved + follow-up in system</td><td><code>contact_inquiries</code> table + admin inbox</td><td><span class="tag p3">P3</span></td></tr>
+        <tr><td>Staff login, roles, who can do what</td><td>Spatie Permission + custom roles</td><td><span class="tag p2">P2</span></td></tr>
+        <tr><td>Audit: who sent invoice, logins, edits</td><td>Spatie Activitylog + super-admin feed</td><td><span class="tag p2">P2</span> grows in 3–5</td></tr>
+        <tr><td>Quotations/invoices, PDF, email, status, customers</td><td>Invoice module + <code>invoice_clients</code></td><td><span class="tag p4">P4</span></td></tr>
+        <tr><td>Update products, services, projects, logos, images without code</td><td>Admin CMS → DB replaces PHP file</td><td><span class="tag p5">P5</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Roles (admin)</h2>
+    <div class="card">
+      <p style="margin:0 0 0.75rem;"><strong>super_admin</strong> — everything; only role that manages roles/permissions and sees full activity log</p>
+      <p style="margin:0 0 0.75rem;"><strong>admin</strong> — default ops bundle (inquiries, invoices per seed — tune for Enovak)</p>
+      <p style="margin:0;"><strong>custom roles</strong> — super_admin creates name + picks permissions (e.g. view-only inquiries, own invoices only)</p>
+    </div>
+
+    <h2>Permissions checklist (for policies + admin UI)</h2>
+    <table>
+      <thead><tr><th>Area</th><th>Permission keys</th></tr></thead>
+      <tbody>
+        <tr><td>Users & audit</td><td><code>manage-users</code> · <code>manage-roles</code> · <code>view-activity-log</code></td></tr>
+        <tr><td>Inquiries (P3)</td><td><code>view-contact-inquiries</code> · <code>manage-contact-inquiries</code></td></tr>
+        <tr><td>Invoices (P4)</td><td><code>manage-invoice-clients</code> · <code>create-invoice</code> · <code>edit-invoice</code> · <code>send-invoice</code> · <code>delete-invoice-draft</code> · <code>view-all-invoices</code> · <code>view-own-invoices</code></td></tr>
+        <tr><td>CMS (P5)</td><td><code>manage-company-settings</code> · <code>manage-services</code> · <code>manage-products</code> · <code>manage-showcase</code> · <code>manage-client-logos</code> · <code>manage-media</code></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.85rem;color:var(--muted);">Staff with <code>view-own-invoices</code> only see invoices they created unless they also have <code>view-all-invoices</code>.</p>
+
+    <h2>Key flows (detail)</h2>
+
+    <h3>Contact inquiry (Phase 3)</h3>
+    <div class="card">
+      Visitor submits form → validate → <strong>insert DB row</strong> + <strong>queue email</strong> to company address → redirect with thank-you flash.
+      Staff opens admin → list/filter → open detail (marks read) → change status (new / in progress / closed / spam) → internal notes → each change logged in activity feed.
+    </div>
+
+    <h3>Invoice (Phase 4)</h3>
+    <div class="card">
+      Create <strong>invoice client</strong> (company, contact, email) → create <strong>draft</strong> with line items (totals recalc on server) → preview PDF →
+      <strong>Send</strong> assigns number <code>ENV-2026-0001</code> (never reused), queues email with PDF → status Sent → manually Paid / Overdue / Cancelled.
+      Activity log records send (who, which client email) and status changes.
+    </div>
+
+    <h3>Content today vs CMS (Phase 5)</h3>
+    <div class="card">
+      <strong>Now:</strong> edit <code>content.php</code> or client returns <code>content-for-client.txt</code> → you paste into PHP → deploy.
+      <strong>Phase 5:</strong> same Blade views, loader reads MySQL; admin CRUD for products, services, showcase, company block, client logos, uploads; optional import from existing PHP once.
+    </div>
+
+    <h2>Stack</h2>
+    <div class="stack">
+      <span>Laravel 12</span>
+      <span>Blade public</span>
+      <span>React /admin</span>
+      <span>Sanctum</span>
+      <span>Spatie Permission</span>
+      <span>Spatie Activitylog</span>
+      <span>MySQL (P2+)</span>
+      <span>Queued mail</span>
+      <span>DomPDF (P4)</span>
+    </div>
+
+    <footer>
+      Generated for quick review · Enovak project · App root: <code>site/</code>
+    </footer>
+  </div>
+</body>
+</html>

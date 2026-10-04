@@ -1,0 +1,350 @@
+ENOVAK — WEBSITE COPY
+For client review. Edit this file; we will update the live site from your changes.
+(Navigation and search/SEO text are handled separately — not included here.)
+
+══════════════════════════════════════════════════════════════════
+COMPANY & CONTACT
+══════════════════════════════════════════════════════════════════
+Enovak (est. 2007)
+
+Engineering solutions for industrial and pharmaceutical clients in Bangladesh
+
+An engineering firm supplying industrial equipment to Bangladeshi pharmaceutical companies, with technology from manufacturers worldwide — design, supply, installation, commissioning, and validation.
+
+Address: 74/B, 11th Floor, R H Home Center, 1 Green Rd, Dhaka 1215
+Phone:   +880 1717 1717 1717
+Email:   support@enovak.com
+
+══════════════════════════════════════════════════════════════════
+HOME PAGE — HERO (top banner)
+══════════════════════════════════════════════════════════════════
+Est. 2007 · Bangladesh
+
+Engineering for Bangladesh’s pharmaceutical industry
+
+We supply, install, commission, document and validate machinery — bringing proven process technology from manufacturers worldwide to plants across Bangladesh.
+
+Button 1: Our Services
+Button 2: Get in Touch
+(Hero photo is chosen by the design team — not listed here.)
+
+══════════════════════════════════════════════════════════════════
+HOME PAGE — ABOUT
+══════════════════════════════════════════════════════════════════
+A trusted engineering partner since 2007
+
+Enovak was established in 2007 to bring international process technology and engineering standards to manufacturers in Bangladesh. We supply, install, commission, document and validate machinery for pharmaceutical and industrial plants.
+
+Source countries span India, Singapore, Taiwan, China, Korea, Germany, Italy, Spain, the UK and the United States. Our engineers train with the manufacturers so after-sales support on the local market is the same team that delivered the line.
+
+— Leadership —
+Foyjul Alam, Managing Director
+
+Foyjul Alam is the Managing Director of Enovak. He has been in the pharmaceutical engineering industry for over 10 years and has a deep understanding of the industry. He is a graduate of the University of Dhaka and has a Master's degree in Pharmaceutical Engineering from the University of Dhaka.
+
+— What we stand for —
+• Global manufacturers
+  A network of international partnerships bringing process technology to Bangladesh.
+
+• Leading technology
+  Access to current equipment and systems — specified to the URS, not a catalogue default.
+
+• Responsive service
+  On-call support from engineers trained by the manufacturers of the machines we supply.
+
+• Industry support
+  Close collaboration with local plants through design, install, validation, and the next expansion.
+
+══════════════════════════════════════════════════════════════════
+HOME PAGE — SERVICES
+══════════════════════════════════════════════════════════════════
+1. New Plant Design & Engineering
+   Conceptual and detailed engineering for new production facilities — layout, process flow, load calculation, and system specification before construction begins.
+
+2. Process Consulting
+   Technical consulting on manufacturing processes: equipment and workflow selection against the actual user requirement specification.
+
+3. Clean Room & HVAC Systems
+   Full-scope clean room panels, HVAC and controls — plan, design, install, commission and validate, plus after-sales and spare parts.
+
+4. Pharma Water Systems
+   Turnkey water systems: generation equipment plus complete storage and distribution for purified water, water for injection, and pure steam.
+
+5. Production & Process Equipment
+   Sourcing and supply of production-line machinery across solid, liquid, sterile, and specialty dosage forms.
+
+6. Packaging Equipment
+   Primary and secondary packaging — blister, cartoning, sachet, serialization, and end-of-line systems.
+
+7. Laboratory Equipment
+   QC and testing instruments including stability chambers, incubators, and inspection systems.
+
+8. Testing, Commissioning & Validation
+   On-site installation, commissioning, documentation and validation until the line is production-ready and compliant.
+
+══════════════════════════════════════════════════════════════════
+HOME PAGE — SHOWCASE (capabilities / project types)
+══════════════════════════════════════════════════════════════════
+Solid production (OSD)
+Industry: Pharmaceutical
+Process:  Dispensing → Sieving → Blending → Granulation → Tabletting → Coating → Packing
+
+OSD lines including MUPS, segmented high-output tabletting, effervescent production, isolator-based closed granulation for OEB5, and liquid-in-hard-gelatin.
+
+---
+
+Semi-solid production
+Industry: Pharmaceutical
+Process:  Dispensing → Mixing & manufacturing → Filling → Packing
+
+Suppository, cream and ointment lines — including turnkey suppository solutions.
+
+---
+
+High-speed liquid filling
+Industry: Pharmaceutical
+Process:  Dispensing → Mixing & manufacturing → Filling → Sealing → Labeling → Packing
+
+Mono-block liquid filling lines, including E-fill technology for high-speed output.
+
+---
+
+Soft-gel production
+Industry: Pharmaceutical
+Process:  Dispensing → Mixing → Filling → Sealing → Encapsulation → Drying → Aging → Packing
+
+Turnkey soft-gel production and encapsulation suites.
+
+---
+
+Potent & hormone production
+Industry: Pharmaceutical
+Process:  Solid and injectable · OEB 1–5
+
+Containment-led suites for potent and hormone products, solid and injectable.
+
+---
+
+Biotech / insulin filling
+Industry: Biotech
+Process:  Vials · Cartridges · Pre-filled syringes
+
+Combi filling lines through coding, cap, labelling and inspection for insulin formats.
+
+---
+
+Sterile production
+Industry: Pharmaceutical
+Process:  Dispensing → Mixing → Filling → Sealing → Packing
+
+Sterile vessels and high-speed vial lines; eye drops, nasal drops, ampoules and vials.
+
+---
+
+Lyophilisation
+Industry: Pharmaceutical
+Process:  Filling → Half stoppering → LYO → Full stoppering → Labelling → Packing
+
+Lyophilisation technology for sterile freeze-dried products.
+
+---
+
+Pulmonary (DPI / MDPI)
+Industry: Pharmaceutical
+Process:  DPI: Blending → Encapsulation → Packing · MDPI: Blending → Blister → Secondary pack
+
+Low-dose drum-dosing DPI production and blister-based MDPI with applicator devices.
+
+---
+
+Sterilization
+Industry: Pharmaceutical
+Process:  Autoclave · DHS · Utensil washer · CIP/SIP
+
+Lab, pilot and production-scale autoclaves, dry-heat sterilizers, washers and CIP/SIP.
+
+---
+
+QC equipment
+Industry: Quality control
+Process:  Stability · BOD · Cooling
+
+Stability chambers, BOD incubators and cooling cabinets for QC labs.
+
+---
+
+High-speed inspection
+Industry: Pharmaceutical
+Process:  Cartridges · Vials · Ampoules · PFS · LYO · Tablet · Capsule
+
+Inspection of insulin cartridges, liquid vials/ampoules, PFS, lyophilized product, and 360° tablet/capsule inspection.
+
+---
+
+Packing & end-of-line
+Industry: Pharmaceutical
+Process:  Blister · Cartoning · Sachet · Serialization
+
+Wallet packing, assembly (MDPI, pen, syringe), continuous-motion blister/cartoner/case packer, bottle cartoner with dropper insert, sachet, serialization, bag filler, blister-in-pouch, oral film, transdermal patch.
+
+---
+
+══════════════════════════════════════════════════════════════════
+PRODUCTS PAGE — CATEGORIES
+══════════════════════════════════════════════════════════════════
+Clean Room & HVAC
+Clean room panels, air handling, chillers, controls, filtration, ducting and insulation for regulated production spaces.
+
+Pharma Water
+Generation, storage and distribution for purified water, WFI and pure steam.
+
+Production & Process
+Machinery for core manufacturing — granulation, compression, coating, filling and related line equipment.
+
+Packaging
+Primary and secondary packaging: blister, cartoning, labelling, serialization and end-of-line.
+
+Laboratory & QC
+QC and testing instruments — stability, incubation, inspection and related lab systems.
+
+══════════════════════════════════════════════════════════════════
+PRODUCTS PAGE — INDIVIDUAL PRODUCTS
+══════════════════════════════════════════════════════════════════
+── Clean Room & HVAC ──
+
+Modular Clean Room Panel [featured on homepage]
+Sandwich panels for GMP clean rooms — walls, ceilings and returns, supplied as part of a designed envelope.
+Specifications:
+  • Application: ISO classified / GMP production
+  • Scope: Panel, doors, windows, coving
+  • Finish: HPL / GI / SS options
+
+Air Handling Unit (AHU) [featured on homepage]
+Process AHUs for classified spaces — filtration, cooling, heating and humidity control specified to the room load.
+Specifications:
+  • Type: Double-skin AHU
+  • Filtration: Pre + fine + HEPA (as designed)
+  • Controls: BMS / local
+
+Process Chiller [featured on homepage]
+Chilled-water plant for HVAC and process loads, selected against calculated demand.
+Specifications:
+  • Medium: Chilled water
+  • Use: HVAC + process
+
+Desiccant Dehumidifier
+Low-dew-point dehumidification for coating, soft-gel, and other humidity-critical rooms.
+Specifications:
+  • Type: Desiccant wheel
+  • Application: Low RH process rooms
+
+HEPA & Process Filtration
+HEPA / ULPA and pre-filters for AHUs, terminals and clean-room returns.
+Specifications:
+  • Grades: G4–H14 / U15 as specified
+
+HVAC Controls
+Room-pressure, temperature and humidity control with BMS integration for classified areas.
+Specifications:
+  • Scope: Sensors, valves, DDC, BMS
+
+Ductwork & Insulation
+Fabricated ducting and insulation packages executed with the HVAC install.
+Specifications:
+  • Scope: GI / SS duct, insulation, supports
+
+Process Fans & Pumps
+Fans, pumps, valves and pipe fittings selected as part of HVAC and utility skids.
+Specifications:
+  • Includes: Fans, pumps, valves, fittings
+
+── Pharma Water ──
+
+Purified Water Generation
+PW generation skids for pharmaceutical utilities, designed to the pharmacopoeial grade required.
+Specifications:
+  • Grade: Purified Water
+  • Scope: Generation skid
+
+WFI Storage & Distribution
+Water for Injection storage and loop distribution, including generation where specified.
+Specifications:
+  • Grade: WFI
+  • Scope: Storage + distribution
+
+Pure Steam Generator
+Pure steam generation for sterilization and process use, integrated with the water system.
+Specifications:
+  • Use: Sterilization / process
+
+Heat Exchanger Skid
+Process heat exchangers for utility and water-system duty.
+Specifications:
+  • Type: Shell & tube / plate as specified
+
+── Production & Process ──
+
+High-Shear Granulator
+Granulation suite equipment for OSD — including closed / isolator options for potent product.
+Specifications:
+  • Line: Solid oral (OSD)
+  • Containment: Up to OEB5 (as specified)
+
+Tablet Compression Press
+High-output tablet presses, including segmented tooling for higher throughput.
+Specifications:
+  • Line: OSD / effervescent
+
+Film Coating System
+Coating equipment for tablets, specified against batch size and process time.
+Specifications:
+  • Line: OSD coating
+
+Liquid Filling Line
+High-speed mono-block liquid filling — mixing, filling, sealing, labelling.
+Specifications:
+  • Line: Oral liquid / sterile as specified
+
+── Packaging ──
+
+Blister Packaging Line
+Continuous-motion blister machines with cartoning — Alu/Alu and thermoform.
+Specifications:
+  • Formats: Alu/Alu · PVC/Alu
+
+Cartoning Machine
+High-speed cartoners, including bottle cartoning with automatic dropper insertion.
+Specifications:
+  • Type: Continuous motion
+
+Serialization System
+Track-and-trace serialization for regulated markets, integrated at packing.
+Specifications:
+  • Scope: Print, verify, aggregate
+
+── Laboratory & QC ──
+
+Stability Chamber
+ICH stability chambers for QC — temperature and humidity controlled.
+Specifications:
+  • Use: ICH stability
+
+Visual Inspection Machine
+High-speed inspection for vials, ampoules, cartridges, tablets and capsules.
+Specifications:
+  • Formats: Vial · Ampoule · PFS · Tablet · Capsule
+
+Autoclave / Sterilizer
+Lab, pilot and production-scale autoclaves, DHS and utensil washers.
+Specifications:
+  • Scale: Lab · Pilot · Production
+
+══════════════════════════════════════════════════════════════════
+HOME PAGE — FEATURED PRODUCTS (order on homepage)
+══════════════════════════════════════════════════════════════════
+• Modular Clean Room Panel
+• Air Handling Unit (AHU)
+• Process Chiller
+• High-Shear Granulator
+• Tablet Compression Press
+• Blister Packaging Line
