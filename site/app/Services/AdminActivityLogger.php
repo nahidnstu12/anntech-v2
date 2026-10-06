@@ -47,6 +47,19 @@ class AdminActivityLogger
         return $logger->log($description);
     }
 
+    public static function invoice(string $description, ?User $causer = null, ?\App\Models\Invoice $invoice = null, array $extra = []): Activity
+    {
+        $logger = activity('invoice')
+            ->causedBy($causer)
+            ->withProperties(array_merge(self::requestContext(), $extra));
+
+        if ($invoice) {
+            $logger->performedOn($invoice);
+        }
+
+        return $logger->log($description);
+    }
+
     /** @return array{ip: ?string, user_agent: ?string} */
     private static function requestContext(): array
     {

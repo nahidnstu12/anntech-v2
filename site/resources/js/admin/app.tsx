@@ -6,6 +6,10 @@ import { ChangePasswordPage } from './features/account/ChangePasswordPage';
 import { ActivityPage } from './features/activity/ActivityPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { InquiriesPage } from './features/inquiries/InquiriesPage';
+import { InvoiceClientsPage } from './features/invoices/InvoiceClientsPage';
+import { InvoiceEditorPage } from './features/invoices/InvoiceEditorPage';
+import { InvoicesListPage } from './features/invoices/InvoicesListPage';
+import { INVOICE_PERMISSIONS } from './features/invoices/types';
 import { RolesPage } from './features/roles/RolesPage';
 import { UsersPage } from './features/users/UsersPage';
 import { AuthProvider } from './lib/auth';
@@ -36,6 +40,14 @@ if (root) {
                             >
                                 <Route path="inquiries" element={<InquiriesPage />} />
                                 <Route path="inquiries/:id" element={<InquiriesPage />} />
+                            </Route>
+                            <Route
+                                element={<RequireAnyPermission permissions={[...INVOICE_PERMISSIONS]} />}
+                            >
+                                <Route path="invoice-clients" element={<InvoiceClientsPage />} />
+                                <Route path="invoices" element={<InvoicesListPage />} />
+                                <Route path="invoices/new" element={<InvoiceEditorPage />} />
+                                <Route path="invoices/:id" element={<InvoiceEditorPage />} />
                             </Route>
                             <Route element={<RequireSuperAdmin />}>
                                 <Route path="roles" element={<RolesPage />} />

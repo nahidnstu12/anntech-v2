@@ -3,6 +3,12 @@ import { Link, NavLink, Outlet } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
 
+import { INVOICE_PERMISSIONS } from '../features/invoices/types';
+
+function canAccessInvoices(user: ReturnType<typeof useAuth>['user']) {
+    return INVOICE_PERMISSIONS.some((p) => user?.permissions.includes(p));
+}
+
 function canViewInquiries(user: ReturnType<typeof useAuth>['user']) {
     return (
         user?.permissions.includes('view-contact-inquiries') ||
@@ -31,6 +37,18 @@ export function AdminLayout() {
                         <NavLink to="/inquiries" className={linkClass}>
                             Inquiries
                         </NavLink>
+                    )}
+                    {canAccessInvoices(user) && (
+                        <>
+                            <NavLink to="/invoices" className={linkClass}>
+                                Invoices
+                            </NavLink>
+                            {user?.permissions.includes('manage-invoice-clients') && (
+                                <NavLink to="/invoice-clients" className={linkClass}>
+                                    Invoice clients
+                                </NavLink>
+                            )}
+                        </>
                     )}
                     {user?.permissions.includes('manage-users') && (
                         <NavLink to="/users" className={linkClass}>
@@ -103,9 +121,17 @@ export function DashboardPage() {
                     )}
                 </div>
                 <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
-                    <p className="text-sm text-slate-400">Invoices</p>
-                    <p className="text-2xl font-semibold text-slate-200">—</p>
-                    <p className="text-xs text-slate-500">Phase 4</p>
+                    <p className="text-sm text-slate-400">Draft invoices</p>
+                    {canAccessInvoices(user) ? (
+                        <Link to="/invoices?status=draft" className="mt-2 inline-block text-sm text-sky-400 hover:underline">
+                            Open invoices
+                        </Link>
+                    ) : (
+                        <>
+                            <p className="text-2xl font-semibold text-slate-200">—</p>
+                            <p className="text-xs text-slate-500">No access</p>
+                        </>
+                    )}
                 </div>
             </div>
             {user?.is_super_admin && (

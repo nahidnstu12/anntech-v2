@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\Api\Admin\ContactInquiryController;
+use App\Http\Controllers\Api\Admin\InvoiceClientController;
+use App\Http\Controllers\Api\Admin\InvoiceController;
 use App\Http\Controllers\Api\Admin\MePasswordController;
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\RoleController;
@@ -47,5 +49,22 @@ Route::prefix('admin')->group(function (): void {
         Route::middleware(['permission:view-activity-log', 'super_admin'])->group(function (): void {
             Route::get('/activity', [ActivityController::class, 'index']);
         });
+
+        Route::get('/invoices/assignable-users', [InvoiceController::class, 'assignableUsers']);
+
+        Route::get('/invoice-clients', [InvoiceClientController::class, 'index']);
+        Route::post('/invoice-clients', [InvoiceClientController::class, 'store']);
+        Route::get('/invoice-clients/{invoiceClient}', [InvoiceClientController::class, 'show']);
+        Route::patch('/invoice-clients/{invoiceClient}', [InvoiceClientController::class, 'update']);
+        Route::delete('/invoice-clients/{invoiceClient}', [InvoiceClientController::class, 'destroy']);
+
+        Route::get('/invoices', [InvoiceController::class, 'index']);
+        Route::post('/invoices', [InvoiceController::class, 'store']);
+        Route::get('/invoices/{invoice}', [InvoiceController::class, 'show']);
+        Route::patch('/invoices/{invoice}', [InvoiceController::class, 'update']);
+        Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy']);
+        Route::post('/invoices/{invoice}/send', [InvoiceController::class, 'send']);
+        Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf']);
+        Route::patch('/invoices/{invoice}/status', [InvoiceController::class, 'updateStatus']);
     });
 });
