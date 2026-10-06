@@ -1,5 +1,7 @@
 # Phase 2 — Admin shell, auth, RBAC, activity log
 
+**Blueprint (read before coding):** [docs/p2-admin-auth-rbac-analysis.md](../docs/p2-admin-auth-rbac-analysis.md), [docs/p2-admin-auth-rbac-schema.md](../docs/p2-admin-auth-rbac-schema.md)
+
 **Depends on:** Phase 1 public site running.  
 **Blocks:** Phases 3–5 (all admin features).
 
