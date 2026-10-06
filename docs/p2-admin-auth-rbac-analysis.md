@@ -5,7 +5,9 @@
 **Permission keys (canonical):** [requirements.md](./requirements.md#roles--permissions-target)  
 **Depends on:** Phase 1 public site (`site/`). Phase 1 doc stays as-is.
 
-This document is the implementation blueprint before writing Phase 2 code. No guessing: each feature maps to a concrete rule, table, or API behavior. Open decisions are listed at the end with a recommendation.
+This document is the implementation blueprint before writing Phase 2 code. No guessing: each feature maps to a concrete rule, table, or API behavior.
+
+**Scale:** ~20 staff users — prefer simple flows over edge-case machinery (see §11 locked decisions).
 
 ---
 
@@ -37,7 +39,7 @@ This document is the implementation blueprint before writing Phase 2 code. No gu
 
 - Set `SESSION_LIFETIME=4320` (minutes = 3 × 24 × 60).
 - Default Laravel behavior: **idle** timeout — each authenticated request extends `last_activity` on the `sessions` row. This is standard “stay logged in while working.”
-- **Not** a hard “absolute 3 days from login” unless we add custom middleware (out of scope unless you want it — see §8).
+- **Not** a hard “absolute 3 days from login” — **confirmed:** 3-day idle only (§11).
 
 ### 2.3 CSRF & cookies
 
@@ -86,7 +88,7 @@ This document is the implementation blueprint before writing Phase 2 code. No gu
 
 **Do not seed:** staff users, `admin` role, custom roles, or role-permission maps for non–super-admin roles.
 
-**Phase doc note:** [p2-admin-auth-rbac.md](../phases/p2-admin-auth-rbac.md) still mentions seeding `admin` role — treat this analysis as the seed source of truth until that line is updated at implementation time.
+**Single super admin (locked):** Exactly **one** user ever has the `super_admin` role — the seeded account. Staff always get custom roles (or an Enovak-defined `admin`-like role); **`super_admin` is not assignable** in user create/edit UI or API.
 
 ### 3.3 Permission catalog (Phase 2 active vs dormant)
 
@@ -115,7 +117,7 @@ Pick **one** approach (avoid double logic):
 | **A.** Seed all permissions onto `super_admin` role | Spatie `can()` works everywhere; `/me` lists permissions normally | Must re-sync seeder when new keys added |
 | **B.** `Gate::before(fn ($user, $ability) => $user->hasRole('super_admin') ? true : null)` | New permissions auto-work for super admin | `/me` must explicitly merge “all” for UI; Spatie role sync simpler |
 
-**Recommendation:** **A** for Phase 2 — explicit, matches activity audit expectations, `/me` stays honest. Add new permission keys in one seeder class when Phases 3–5 add keys (idempotent `firstOrCreate`).
+**Locked:** **Approach A** — seed all permissions onto `super_admin` role. Add new permission keys in one seeder class when Phases 3–5 add keys (idempotent `firstOrCreate`).
 
 ### 3.5 Guards
 
@@ -127,13 +129,14 @@ Pick **one** approach (avoid double logic):
 | Rule | Rationale |
 | --- | --- |
 | Staff get permissions **via role only** | Do not use `model_has_permissions` for normal users — keeps audit and UI simple. |
-| **One role per user** (recommended) | Enovak SMB model; UI single select. DB still allows multiple via Spatie if you later relax — enforce in `UserStoreRequest` / service. |
+| **One role per user** (locked) | UI single select; sync replaces existing role on save. |
 | Cannot delete `super_admin` role | Hard-coded protect |
 | Cannot remove `manage-roles` / `view-activity-log` from `super_admin` role | Hard-coded protect |
 | When syncing permissions onto any non–`super_admin` role, **strip** `manage-roles` and `view-activity-log` | Matches requirements “only super_admin … manages roles … views global activity feed” |
-| At least one active user with `super_admin` role | Block demote/deactivate/delete if last |
-| User cannot deactivate themselves | Prevent lockout |
-| Super admin may CRUD custom roles; rename optional | Slug/name unique per guard |
+| **`super_admin` role not assignable** | Only seeded user; reject API/UI if role id is `super_admin` |
+| Cannot deactivate seeded super admin | Prevents total lockout; that account stays active |
+| Super admin cannot deactivate themselves | Same rule as other users for consistency |
+| Super admin may CRUD **custom** roles only | Cannot rename/delete `super_admin` role row |
 
 ### 3.7 “Create permissions” vs catalog
 
@@ -161,20 +164,28 @@ Keep: `name`, `email` unique, `password` hashed, timestamps. `email_verified_at`
 | List / show users | Super admin or delegate | `manage-users` | — |
 | Create user | Same | `manage-users` | Set password (see §4.3); assign one role; activity `user` |
 | Update profile fields | Same | `manage-users` | Activity with dirty fields |
-| Change role | Same | `manage-users` | Activity; cannot assign `super_admin` role unless actor is super admin (recommended: only super admin may create another super admin) |
-| Deactivate | Same | `manage-users` | `is_active=false`; invalidate sessions optional (recommended: delete `sessions` rows for that `user_id`) |
-| Delete | **Recommendation:** soft or disallow | — | Prefer **deactivate only** in Phase 2 to preserve audit FK integrity; hard delete complicates activity causer |
+| Change role | Same | `manage-users` | Activity; role must not be `super_admin` |
+| Deactivate | Same | `manage-users` | `is_active=false`; delete `sessions` for that `user_id`; cannot target seeded super admin |
+| Delete | **Locked:** disallow | — | **Deactivate only** — no hard delete in Phase 2 |
 
-### 4.3 Password reset flow (Phase 2)
+### 4.3 Password flow (locked — keep simple)
 
-Phase spec mentions “password reset flow.” For **staff-only** admin with no public registration:
+Two paths only; **no** “forgot password” email, **no** `must_change_password` flag, **no** token tables for self-serve reset.
 
-| Option | Description |
+| Who | Flow |
 | --- | --- |
-| **P1 — Admin sets password** | On create/reset, super admin (or `manage-users`) sets temporary password; user must change on first login (optional Phase 2.1 — can defer “must change” flag). |
-| **P2 — Email reset link** | Reuse Laravel `password_reset_tokens`; admin UI “Send reset email” queues notification. |
+| Super admin (create user) | On user create (and optional “Set new password” on edit user), set `password` in form → hashed on save. Tell staff the password out of band (phone/WhatsApp). |
+| Any logged-in staff | **Account → Change password** in admin shell: `current_password`, `password`, `password_confirmation`. Validates current password, updates hash, logs `auth` activity, **invalidates other sessions** for that user (optional: keep current session only). |
 
-**Recommendation:** **P1 for MVP slice 2.3** (simplest, no mail dependency for onboarding). Add **P2** as a follow-up slice if Enovak wants self-serve password reset without calling super admin. Table `password_reset_tokens` already exists.
+**API (slice 2.1 or 2.3):**
+
+| Method | Path | Access |
+| --- | --- | --- |
+| PUT | `/api/admin/me/password` | Authenticated (any active user) |
+
+Request body: `{ current_password, password, password_confirmation }`. Use Laravel `Password::defaults()` rules (min length consistent with user create).
+
+Super admin resetting a **forgotten** staff password: use existing user edit + set new password (same as create) — staff does not need email.
 
 ---
 
@@ -193,6 +204,7 @@ Phase spec mentions “password reset flow.” For **staff-only** admin with no 
 | Login success | `auth` | user | `{ ip, user_agent }` |
 | Login failed | `auth` | null | `{ email, ip, user_agent }` |
 | Logout | `auth` | user | `{ ip }` |
+| Password changed (self) | `auth` | user | `{ ip }` |
 | User created/updated/deactivated | `user` | actor | `{ target_user_id, … }` |
 | Role created/updated/deleted | `role` | actor | `{ role_id, name }` |
 | Permissions synced on role | `role` | actor | `{ role_id, permission_names[] }` |
@@ -216,6 +228,7 @@ Prefix: `/api/admin`. Middleware stack: `auth:sanctum` → optional `permission:
 | POST | `/login` | Public (throttled) |
 | POST | `/logout` | Authenticated |
 | GET | `/me` | Authenticated |
+| PUT | `/me/password` | Authenticated (change own password) |
 | GET/POST/PATCH/DELETE | `/users` | `manage-users` |
 | GET/POST/PATCH/DELETE | `/roles` | `manage-roles` + super_admin role |
 | GET | `/permissions` | `manage-roles` + super_admin role |
@@ -237,7 +250,9 @@ Matches phase spec tree under `resources/js/admin/`.
 | Boot | Load `/me` once; store permissions[] and role name |
 | Route guard | No `/me` → redirect login; missing permission → 403 page |
 | Nav | Hide Users without `manage-users`; Roles / Activity only if super_admin role (and permission) |
-| Login page | Email/password; no remember me; show session expiry hint optional (“Sessions last up to 3 days of inactivity”) |
+| Account | **Change password** link for all users (simple form) |
+| Login page | Email/password; no remember me; optional hint: “Sessions last up to 3 days of inactivity” |
+| User form | Role dropdown **excludes** `super_admin`; password field on create + optional “Set new password” on edit |
 
 Build: separate Vite entry → `public/build/admin` (or project-standard path).
 
@@ -279,26 +294,27 @@ Map directly to [p2-admin-auth-rbac.md](../phases/p2-admin-auth-rbac.md#implemen
 
 ---
 
-## 11. Decisions for you to confirm
+## 11. Locked decisions (client sign-off)
 
-| # | Topic | Recommendation |
+| # | Topic | Decision |
 | --- | --- | --- |
-| 1 | Seed scope | Seed **permission catalog + super_admin role + one super_admin user**; **do not** seed `admin` role or staff. |
-| 2 | New permission keys in UI | **No** — catalog-only; super admin assigns existing keys. |
-| 3 | Session semantics | **3-day idle** via `SESSION_LIFETIME=4320`; no refresh token; no remember-me. OK? |
-| 4 | One role per user | **Yes** — single role select in UI. |
-| 5 | Password onboarding | **Admin-set password** on create for MVP; email reset later if needed. |
-| 6 | User delete | **Deactivate only** in Phase 2 (no hard delete). |
-| 7 | Second super admin | Only existing super admin can assign `super_admin` role to another user. |
-| 8 | Super admin permission implementation | **Seed all permissions** on `super_admin` role (approach A). |
-| 9 | Activity feed access | Require **`super_admin` role** plus `view-activity-log`, not permission alone on custom roles. |
-| 10 | Dormant permissions in matrix | Show all seeded keys grouped by phase; allow pre-assignment for future modules. |
+| 1 | Seed scope | Permission catalog + `super_admin` role + **one** super admin user; no `admin` role or staff in seed. |
+| 2 | Permission keys | Catalog-only in DB; super admin assigns to roles — no UI to invent new keys. |
+| 3 | Session | **3-day idle** (`SESSION_LIFETIME=4320`); no refresh token; no remember-me. |
+| 4 | Roles per user | **One role** per user in UI/API. |
+| 5 | Passwords | Super admin sets password on create (and can set on user edit). Staff change own password **after login** via `/me/password` + Account UI. No forgot-password email flow. |
+| 6 | User removal | **Deactivate only**; no hard delete. |
+| 7 | Super admin count | **Single** seeded super admin forever — `super_admin` role **not assignable** to other users. |
+| 8 | Super admin permissions | All catalog permissions on `super_admin` role (Spatie approach A). |
+| 9 | Activity feed | `view-activity-log` + **`super_admin` role only** (strip from other roles on sync). |
+| 10 | Permission matrix | Show all seeded keys by phase group; allow pre-assign for future modules. |
+| 11 | Simplicity | ~20 users — no multi–super-admin tooling, no email reset pipeline, no forced first-login password change. |
 
-Reply with yes/no or tweaks on §11 before Phase 2.1 code starts — especially **#3** (idle vs absolute 3-day) and **#5** (password flow).
+Phase 2.1+ implementation follows this section.
 
 ---
 
 ## 12. Doc drift to fix when implementing
 
-- Update p2 seed bullet: remove seeded `admin` role; point to this analysis §3.2.
 - Set `.env.example`: `SESSION_LIFETIME=4320`, super admin seeder vars, Sanctum stateful domains.
+- User CRUD validation: reject `super_admin` role id; block deactivate on seeded super admin user id.

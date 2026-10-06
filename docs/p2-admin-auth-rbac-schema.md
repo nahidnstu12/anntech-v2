@@ -72,7 +72,7 @@ Already created in `0001_01_01_000000_create_users_table.php`:
 | `token` | Hashed token |
 | `created_at` | Expiry via `config/auth.php` `passwords.users.expire` |
 
-Used only if email reset flow is implemented; schema already sufficient.
+**Phase 2:** unused — staff passwords are set by super admin or changed while logged in via `/api/admin/me/password`. Table remains from Laravel default; no migration changes.
 
 ---
 
@@ -129,7 +129,7 @@ Publish default migration (`php artisan vendor:publish --provider="Spatie\Permis
 
 **Primary key:** (`role_id`, `model_id`, `model_type`).
 
-**Seed:** assign `super_admin` role to seeded super admin user.
+**Seed:** assign `super_admin` role **only** to the one seeded super admin user. Application must reject assigning this role to any other user (no extra DB column required — enforce in app).
 
 ### 5.5 `model_has_permissions` (empty in normal ops)
 
