@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminSpaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -9,6 +10,10 @@ Route::get('/', [HomeController::class, 'show'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+Route::get('/admin/{any?}', [AdminSpaController::class, 'show'])
+    ->where('any', '.*')
+    ->name('admin.spa');
 Route::get('/sitemap.xml', function () {
     $c = require resource_path('data/content.php');
     $urls = collect([url('/'), url('/products')])
