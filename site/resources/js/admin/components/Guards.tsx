@@ -33,6 +33,20 @@ export function RequirePermission({ permission }: { permission: string }) {
     return <Outlet />;
 }
 
+export function RequireAnyPermission({ permissions }: { permissions: string[] }) {
+    const { can } = useAuth();
+
+    if (!permissions.some((p) => can(p))) {
+        return (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-6 text-amber-100">
+                You do not have permission to view this page.
+            </div>
+        );
+    }
+
+    return <Outlet />;
+}
+
 export function RequireSuperAdmin() {
     const { user } = useAuth();
 

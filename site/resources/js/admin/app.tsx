@@ -1,10 +1,11 @@
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AdminLayout, DashboardPage } from './components/AdminLayout';
-import { RequireAuth, RequirePermission, RequireSuperAdmin } from './components/Guards';
+import { RequireAuth, RequireAnyPermission, RequirePermission, RequireSuperAdmin } from './components/Guards';
 import { ChangePasswordPage } from './features/account/ChangePasswordPage';
 import { ActivityPage } from './features/activity/ActivityPage';
 import { LoginPage } from './features/auth/LoginPage';
+import { InquiriesPage } from './features/inquiries/InquiriesPage';
 import { RolesPage } from './features/roles/RolesPage';
 import { UsersPage } from './features/users/UsersPage';
 import { AuthProvider } from './lib/auth';
@@ -22,6 +23,19 @@ if (root) {
                             <Route index element={<DashboardPage />} />
                             <Route element={<RequirePermission permission="manage-users" />}>
                                 <Route path="users" element={<UsersPage />} />
+                            </Route>
+                            <Route
+                                element={
+                                    <RequireAnyPermission
+                                        permissions={[
+                                            'view-contact-inquiries',
+                                            'manage-contact-inquiries',
+                                        ]}
+                                    />
+                                }
+                            >
+                                <Route path="inquiries" element={<InquiriesPage />} />
+                                <Route path="inquiries/:id" element={<InquiriesPage />} />
                             </Route>
                             <Route element={<RequireSuperAdmin />}>
                                 <Route path="roles" element={<RolesPage />} />

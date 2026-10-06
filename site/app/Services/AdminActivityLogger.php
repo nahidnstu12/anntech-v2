@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ContactInquiry;
 use App\Models\User;
 use Illuminate\Support\Facades\Request;
 use Spatie\Activitylog\Models\Activity;
@@ -31,6 +32,19 @@ class AdminActivityLogger
             ->causedBy($causer)
             ->withProperties(array_merge(self::requestContext(), $extra))
             ->log($description);
+    }
+
+    public static function inquiry(string $description, ?User $causer = null, ?ContactInquiry $inquiry = null, array $extra = []): Activity
+    {
+        $logger = activity('inquiry')
+            ->causedBy($causer)
+            ->withProperties(array_merge(self::requestContext(), $extra));
+
+        if ($inquiry) {
+            $logger->performedOn($inquiry);
+        }
+
+        return $logger->log($description);
     }
 
     /** @return array{ip: ?string, user_agent: ?string} */

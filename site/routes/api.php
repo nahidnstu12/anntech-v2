@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\AuthController;
+use App\Http\Controllers\Api\Admin\ContactInquiryController;
 use App\Http\Controllers\Api\Admin\MePasswordController;
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\RoleController;
@@ -15,6 +16,16 @@ Route::prefix('admin')->group(function (): void {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
         Route::put('/me/password', [MePasswordController::class, 'update']);
+
+        Route::get('/summary', [ContactInquiryController::class, 'summary']);
+
+        Route::middleware('permission:view-contact-inquiries|manage-contact-inquiries')->group(function (): void {
+            Route::get('/contact-inquiries', [ContactInquiryController::class, 'index']);
+            Route::get('/contact-inquiries/{contactInquiry}', [ContactInquiryController::class, 'show']);
+        });
+
+        Route::patch('/contact-inquiries/{contactInquiry}', [ContactInquiryController::class, 'update'])
+            ->middleware('permission:manage-contact-inquiries');
 
         Route::middleware('permission:manage-users')->group(function (): void {
             Route::get('/users', [UserController::class, 'index']);

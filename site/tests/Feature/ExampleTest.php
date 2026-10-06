@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Mail\ContactEnquiry;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic test example.
      */
@@ -71,6 +73,8 @@ class ExampleTest extends TestCase
                 && $mail->senderName === 'Amina Rahman'
                 && $mail->hasReplyTo('amina@example.com');
         });
+
+        $this->assertDatabaseCount('contact_inquiries', 1);
     }
 
     public function test_contact_validates(): void

@@ -1,5 +1,14 @@
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
+
+function canViewInquiries(user: ReturnType<typeof useAuth>['user']) {
+    return (
+        user?.permissions.includes('view-contact-inquiries') ||
+        user?.permissions.includes('manage-contact-inquiries')
+    );
+}
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
     `block rounded-md px-3 py-2 text-sm ${isActive ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800/60'}`;
@@ -18,6 +27,11 @@ export function AdminLayout() {
                     <NavLink to="/" end className={linkClass}>
                         Dashboard
                     </NavLink>
+                    {canViewInquiries(user) && (
+                        <NavLink to="/inquiries" className={linkClass}>
+                            Inquiries
+                        </NavLink>
+                    )}
                     {user?.permissions.includes('manage-users') && (
                         <NavLink to="/users" className={linkClass}>
                             Users
@@ -54,6 +68,16 @@ export function AdminLayout() {
 
 export function DashboardPage() {
     const { user } = useAuth();
+    const [newInquiries, setNewInquiries] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (!canViewInquiries(user)) {
+            return;
+        }
+        void api<{ data: { new_inquiries: number | null } }>('/summary')
+            .then((res) => setNewInquiries(res.data.new_inquiries))
+            .catch(() => setNewInquiries(null));
+    }, [user]);
 
     return (
         <div>
@@ -61,9 +85,22 @@ export function DashboardPage() {
             <p className="mt-2 text-slate-400">Welcome, {user?.name}.</p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
-                    <p className="text-sm text-slate-400">Inquiries</p>
-                    <p className="text-2xl font-semibold text-slate-200">—</p>
-                    <p className="text-xs text-slate-500">Phase 3</p>
+                    <p className="text-sm text-slate-400">New inquiries</p>
+                    {canViewInquiries(user) ? (
+                        <>
+                            <p className="text-2xl font-semibold text-slate-200">
+                                {newInquiries ?? '—'}
+                            </p>
+                            <Link to="/inquiries?status=new" className="mt-2 inline-block text-sm text-sky-400 hover:underline">
+                                Open inbox
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-2xl font-semibold text-slate-200">—</p>
+                            <p className="text-xs text-slate-500">No access</p>
+                        </>
+                    )}
                 </div>
                 <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
                     <p className="text-sm text-slate-400">Invoices</p>
