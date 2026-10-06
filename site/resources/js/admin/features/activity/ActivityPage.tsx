@@ -38,7 +38,9 @@ export function ActivityPage() {
                     <option value="auth">auth</option>
                     <option value="user">user</option>
                     <option value="role">role</option>
+                    <option value="inquiry">inquiry</option>
                     <option value="invoice">invoice</option>
+                    <option value="system">system</option>
                 </select>
                 <input
                     value={search}
