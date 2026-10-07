@@ -19,12 +19,18 @@ class ContactEnquiry extends Mailable implements ShouldQueue
         public string $senderEmail,
         public string $senderPhone,
         public string $body,
+        public ?int $inquiryId = null,
     ) {}
 
     public function envelope(): Envelope
     {
+        $subject = 'Website enquiry from '.$this->senderName;
+        if ($this->inquiryId) {
+            $subject = '[#'.$this->inquiryId.'] '.$subject;
+        }
+
         return new Envelope(
-            subject: 'Website enquiry from '.$this->senderName,
+            subject: $subject,
             replyTo: [
                 new Address($this->senderEmail, $this->senderName),
             ],

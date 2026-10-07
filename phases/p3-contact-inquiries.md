@@ -1,5 +1,9 @@
 # Phase 3 — Customer inquiry management
 
+# Phase 3 — Contact inquiries
+
+**Blueprint:** [docs/p3-contact-inquiries-analysis.md](../docs/p3-contact-inquiries-analysis.md)
+
 **Depends on:** Phase 2 (auth + `view-contact-inquiries` / `manage-contact-inquiries`).  
 **Goal:** Public contact form unchanged for visitors; every submission stored; email to Enovak still sent; staff work inquiries in admin.
 

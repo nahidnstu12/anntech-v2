@@ -1,5 +1,7 @@
 # Phase 4 — Invoice & quotation management
 
+**Blueprint:** [docs/p4-invoices-analysis.md](../docs/p4-invoices-analysis.md)
+
 **Depends on:** Phase 2 (RBAC + activity log). Phase 3 optional (no hard dependency).
 
 **Goal:** Create professional quotations/invoices inside admin. Auto numbering. PDF download. Email PDF to customer. Track status manually. Separate **invoice clients** from marketing showcase content.

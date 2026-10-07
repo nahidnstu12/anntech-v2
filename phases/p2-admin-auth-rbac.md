@@ -1,5 +1,7 @@
 # Phase 2 — Admin shell, auth, RBAC, activity log
 
+**Blueprint (read before coding):** [docs/p2-admin-auth-rbac-analysis.md](../docs/p2-admin-auth-rbac-analysis.md), [docs/p2-admin-auth-rbac-schema.md](../docs/p2-admin-auth-rbac-schema.md)
+
 **Depends on:** Phase 1 public site running.  
 **Blocks:** Phases 3–5 (all admin features).
 
@@ -16,8 +18,8 @@ Public site unchanged. Still no CMS — `content.php` only.
 | Sanctum | Stateful SPA: `/sanctum/csrf-cookie`, session guard, `credentials: include` from React |
 | Admin UI | React + Tailwind + RTK Query (or project fetch wrapper), built to `public/build/admin` or separate Vite entry |
 | Routes | `GET /admin/{any?}` → SPA shell; `routes/api.php` under `/api/admin/*` |
-| Users | CRUD (super_admin + `manage-users`), activate/deactivate, password reset flow |
-| Roles | super_admin, admin (seeded), custom roles created by super_admin |
+| Users | CRUD (`manage-users`): super admin sets password on create/edit; staff change own password after login (`PUT /me/password`); deactivate only — see analysis §4.3 |
+| Roles | `super_admin` role seeded; **admin** + custom roles created by super_admin (see analysis §3.2) |
 | Permissions | Spatie; sync permission list from `docs/requirements.md` (CMS keys inactive until Phase 5) |
 | Activity | `spatie/laravel-activitylog` on User model + manual logs for login/logout, user/role changes |
 | Dashboard | Minimal home: counts placeholders for inquiries/invoices; **Activity feed** widget for super_admin |
@@ -40,7 +42,8 @@ php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProv
 php artisan migrate
 ```
 
-- Seed: one `super_admin` user, `admin` role, permission rows, role-permission map.
+- Seed: permission catalog, `super_admin` role (all permissions), one `super_admin` user — no `admin` role or staff users (analysis §3.2).
+- Session: `SESSION_LIFETIME=4320` (3-day idle); Sanctum SPA only — no refresh tokens.
 - `config/permission.php`: teams off unless needed later.
 - Activity: `config/activitylog.php` — log only dirty attributes where applicable.
 
@@ -70,6 +73,7 @@ Prefix: `/api/admin`. Middleware: `auth:sanctum`, then permission middleware per
 | Method | Path | Permission |
 | --- | --- | --- |
 | GET | `/me` | authenticated |
+| PUT | `/me/password` | authenticated |
 | POST | `/logout` | authenticated |
 | GET/POST/PATCH/DELETE | `/users` | `manage-users` |
 | GET | `/roles` | `manage-roles` |
@@ -108,6 +112,7 @@ resources/js/admin/
 | Login success | auth | user |
 | Login failed | auth | null |
 | Logout | auth | user |
+| Password changed (self) | auth | user |
 | User created/updated/deactivated | user | actor |
 | Role created/updated/deleted | role | actor |
 | Permissions synced on role | role | actor |
