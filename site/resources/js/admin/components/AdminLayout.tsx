@@ -63,6 +63,9 @@ export function AdminLayout() {
                             <NavLink to="/activity" className={linkClass}>
                                 Activity
                             </NavLink>
+                            <NavLink to="/error-logs" className={linkClass}>
+                                Error log
+                            </NavLink>
                         </>
                     )}
                     <NavLink to="/account/password" className={linkClass}>

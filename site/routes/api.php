@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\ActivityController;
+use App\Http\Controllers\Api\Admin\ErrorLogController;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\Api\Admin\ContactInquiryController;
 use App\Http\Controllers\Api\Admin\InvoiceClientController;
@@ -12,6 +13,12 @@ use App\Http\Controllers\Api\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function (): void {
+    if (app()->environment('testing')) {
+        Route::get('/_test/throw', function (): void {
+            throw new \RuntimeException('Recorded test failure');
+        });
+    }
+
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
     Route::middleware('auth:sanctum')->group(function (): void {
@@ -48,6 +55,11 @@ Route::prefix('admin')->group(function (): void {
 
         Route::middleware(['permission:view-activity-log', 'super_admin'])->group(function (): void {
             Route::get('/activity', [ActivityController::class, 'index']);
+        });
+
+        Route::middleware('super_admin')->group(function (): void {
+            Route::get('/error-logs', [ErrorLogController::class, 'index'])->name('admin.error-logs.index');
+            Route::get('/error-logs/{errorLog}', [ErrorLogController::class, 'show'])->name('admin.error-logs.show');
         });
 
         Route::get('/invoices/assignable-users', [InvoiceController::class, 'assignableUsers']);

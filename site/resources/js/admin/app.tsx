@@ -4,6 +4,7 @@ import { AdminLayout, DashboardPage } from './components/AdminLayout';
 import { RequireAuth, RequireAnyPermission, RequirePermission, RequireSuperAdmin } from './components/Guards';
 import { ChangePasswordPage } from './features/account/ChangePasswordPage';
 import { ActivityPage } from './features/activity/ActivityPage';
+import { ErrorLogsPage } from './features/errors/ErrorLogsPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { InquiriesPage } from './features/inquiries/InquiriesPage';
 import { InvoiceClientsPage } from './features/invoices/InvoiceClientsPage';
@@ -52,6 +53,7 @@ if (root) {
                             <Route element={<RequireSuperAdmin />}>
                                 <Route path="roles" element={<RolesPage />} />
                                 <Route path="activity" element={<ActivityPage />} />
+                                <Route path="error-logs" element={<ErrorLogsPage />} />
                             </Route>
                             <Route path="account/password" element={<ChangePasswordPage />} />
                         </Route>

@@ -27,6 +27,29 @@ export type ActivityRow = {
     created_at: string;
 };
 
+export type ErrorLogRow = {
+    id: number;
+    level: string;
+    exception_class: string;
+    message: string;
+    file: string | null;
+    line: number | null;
+    request_id: string | null;
+    user: { id: number; name: string; email: string } | null;
+    http_method: string | null;
+    url: string | null;
+    status_code: number | null;
+    created_at: string;
+};
+
+export type ErrorLogDetail = ErrorLogRow & {
+    stack_trace?: string | null;
+    context?: Record<string, unknown> | null;
+    route_name?: string | null;
+    ip_address?: string | null;
+    user_agent?: string | null;
+};
+
 function getCookie(name: string): string | null {
     const match = document.cookie.match(new RegExp(`(^|; )${name}=([^;]*)`));
     return match ? decodeURIComponent(match[2]) : null;
